@@ -17,7 +17,16 @@
     <!-- <group title="cell demo">
       <cell title="VUX" value="cool" is-link></cell>
     </group> -->
-    <p v-for="i in num" v-bind:key=i>{{i + labelName}}<br></p>
+    <div v-for="i in movieList" v-bind:key=i>
+      <cell
+      :title=i.title
+      is-link
+      :border-intent="false"
+      :arrow-direction="i.show ? 'up' : 'down'"
+      @click.native="i.show = !i.show"></cell>
+
+      <p class="slide" :class="i.show?'animate':''">blablabla...<br/>blablabla...<br/>blablabla...<br/>blablabla...</p>
+    </div>
   </div>
 </template>
 
@@ -42,6 +51,8 @@ export default {
       list: [],
       num: 100,
       labelName: '',
+      movieList: [],
+      showContent004: false,
     }
   },
   created(){
@@ -50,10 +61,19 @@ export default {
         name: '标签'+ index
       })
     }
+    this.axiosFun({start: 25,count: 25})
   },
   methods: {
     handler: function(index){
       this.labelName = this.list[index].name
+      this.axiosFun({start: index,count: 25})
+    },
+    axiosFun: function(params){
+      this.$axios.get('/api/v2/movie/top250',{params: params}).then((data)=>{
+          this.movieList = data.data.subjects
+      }).catch((err)=>{
+          console.log(err)
+      })
     }
   }
 }
@@ -80,5 +100,16 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.slide {
+  padding: 0 20px;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .5s cubic-bezier(0, 1, 0, 1) -.1s;
+}
+.animate {
+  max-height: 9999px;
+  transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
+  transition-delay: 0s;
 }
 </style>

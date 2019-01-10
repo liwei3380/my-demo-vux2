@@ -5,8 +5,10 @@ import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
 import Home from './components/HelloFromVux'
+import axios from 'axios'
 
 Vue.use(VueRouter)
+Vue.prototype.$axios = axios
 
 const routes = [{
   path: '/',
